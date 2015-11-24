@@ -25,4 +25,8 @@ class Server
       self.send(args[0].downcase.to_sym, client, args[1..-1])
     }
   end
+
+  def parse(message)
+    message.strip.split
+  end
 end
