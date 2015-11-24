@@ -22,7 +22,7 @@ class Server
     loop {
       message = client.gets.chomp
       args = parse(message)
-      self.send(args[0].downcase.to_sym, client, args[1..-1])
+      send(args[0].downcase.to_sym, client, args[1..-1])
     }
   end
 
