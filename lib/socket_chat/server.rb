@@ -1,4 +1,5 @@
 require "socket"
+require_relative "user"
 
 class Server
   def initialize(host, port)
@@ -32,5 +33,16 @@ class Server
 
   def parse(message)
     message.strip.split
+  end
+
+  def login(client, username)
+    @clients.each do |exist_client, user|
+      if user.name == username
+        reply client, "This Username has been used."
+        return
+      end
+    end
+    new_user = User.new(username)
+    @clients[client] = new_user
   end
 end
