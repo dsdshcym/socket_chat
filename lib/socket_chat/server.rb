@@ -26,6 +26,10 @@ class Server
     }
   end
 
+  def reply(client, message)
+    client.puts message
+  end
+
   def parse(message)
     message.strip.split
   end
