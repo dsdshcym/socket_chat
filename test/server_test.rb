@@ -112,6 +112,7 @@ class TestServer < Test::Unit::TestCase
           assert_false result["success"]
         end
       end
+    end
   end
 end
 
