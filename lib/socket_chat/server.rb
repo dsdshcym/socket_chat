@@ -29,7 +29,11 @@ class Server
       args = parse(message)
       method = args[0].downcase
       if valid_methods.include?(method)
-        send(method.to_sym, client, *args[1..-1])
+        begin
+          send(method.to_sym, client, *args[1..-1])
+        rescue ArgumentError
+          reply client, false, "Wrong number of Arguments."
+        end
       else
         reply client, false, "This is not a valid method."
       end
@@ -46,7 +50,7 @@ class Server
     message.strip.split
   end
 
-  def login(client, username, *args)
+  def login(client, username)
     if @clients.has_key?(client)
       reply client, false, "You've already logined."
       return
