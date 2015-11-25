@@ -21,10 +21,16 @@ class Server
   private
 
   def listen(client)
+    valid_methods = %w[login message list create join exit]
     loop {
       message = client.gets.chomp
       args = parse(message)
-      send(args[0].downcase.to_sym, client, args[1..-1])
+      method = args[0].downcase
+      if valid_methods.include?(method)
+        send(method.to_sym, client, args[1..-1])
+      else
+        reply client, false, "This is not a valid method."
+      end
     }
   end
 
