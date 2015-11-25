@@ -1,4 +1,5 @@
 require "socket"
+require "json"
 require_relative "user"
 
 class Server
@@ -27,8 +28,10 @@ class Server
     }
   end
 
-  def reply(client, message)
-    client.puts message
+  def reply(client, success, message)
+    reply_hash = {:success => success, :message => message}
+    reply_json = JSON.generate(reply_hash)
+    client.puts reply_json
   end
 
   def parse(message)
@@ -38,7 +41,7 @@ class Server
   def login(client, username)
     @clients.each do |exist_client, user|
       if user.name == username
-        reply client, "This Username has been used."
+        reply client, false, "This Username has been used."
         return
       end
     end
