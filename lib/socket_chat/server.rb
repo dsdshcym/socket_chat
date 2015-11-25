@@ -53,5 +53,7 @@ class Server
     end
     new_user = User.new(username)
     @clients[client] = new_user
+    reply client, true, "Login Successed."
+  end
   end
 end
