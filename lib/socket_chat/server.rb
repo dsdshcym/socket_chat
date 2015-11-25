@@ -3,11 +3,13 @@ require "json"
 require_relative "user"
 
 class Server
-  def initialize(host, port)
-    @server = TCPServer.open(host, port)
-    @users = Hash.new
+  def initialize()
     @channels = Hash.new
     @clients = Hash.new
+  end
+
+  def build_server(host, port)
+    @server = TCPServer.open(host, port)
   end
 
   def run
