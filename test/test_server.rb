@@ -62,6 +62,22 @@ class TestServer < Test::Unit::TestCase
         assert_false result["success"]
       end
     end
+
+    context "user send message" do
+      context "before login" do
+        setup do
+          @new_client = Client.new(:new_client)
+          @new_username = "Bob"
+        end
+
+        should "failed" do
+          @server.send(:message, @new_client, @new_username)
+          response_json = @new_client.response
+          result = JSON.parse(response_json)
+          assert_false result["success"]
+        end
+      end
+    end
   end
 end
 
