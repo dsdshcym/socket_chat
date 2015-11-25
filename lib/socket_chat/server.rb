@@ -85,4 +85,11 @@ class Server
     end
     reply client, true, "Message sent."
   end
+
+  def create(client, channel)
+    unless logged_in?(client)
+      reply client, false, "Please Login First."
+      return
+    end
+  end
 end
