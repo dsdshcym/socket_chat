@@ -66,8 +66,12 @@ class Server
     reply client, true, "Login Successed."
   end
 
+  def logged_in?(client)
+    @clients.has_key?(client)
+  end
+
   def message(client, *message)
-    unless @clients.has_key?(client)
+    unless logged_in?(client)
       reply client, false, "Please Login First."
       return
     end
