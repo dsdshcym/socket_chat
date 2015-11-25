@@ -65,5 +65,20 @@ class Server
     @clients[client] = new_user
     reply client, true, "Login Successed."
   end
+
+  def message(client, *message)
+    unless @clients.has_key?(client)
+      reply client, false, "Please Login First."
+      return
+    end
+    sender = @clients[client]
+    original_message = message.join(' ')
+    reply_message = "#{sender.name}: #{original_message}"
+    @clients.each do |other_client, other_user|
+      if other_client != client
+        reply other_client, true, reply_message
+      end
+    end
+    reply client, true, "Message sent."
   end
 end
