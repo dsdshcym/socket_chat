@@ -115,13 +115,17 @@ class TestServer < Test::Unit::TestCase
     context "after login" do
       setup do
         @logged_username = "Alice"
-        logged_user = User.new(@logged_username)
         @logged_client = Client.new(:logged_client)
+        @new_channel = "NC"
+        @old_channel = "OC"
+
+        logged_user = User.new(@logged_username)
         logged_client = @logged_client
+        old_channel = @old_channel
         @server.instance_eval do
           @clients[logged_client] = logged_user
+          @channels = [old_channel]
         end
-        @new_channel = "NC"
       end
 
       should "success to create a new channel" do
@@ -131,25 +135,17 @@ class TestServer < Test::Unit::TestCase
         assert_true result["success"]
         channels = nil
         @server.instance_eval { channels = @channels }
-        assert_equal [@new_channel], channels
+        assert_true channels.include?(@new_channel)
       end
 
-      context "try to create an existing channel" do
-        setup do
-          @old_channel = "OC"
-          old_channel = @old_channel
-          @server.instance_eval { @channels = [old_channel] }
-        end
-
-        should "failed" do
-          @server.send(:create, @logged_client, @old_channel)
-          response_json = @logged_client.response
-          result = JSON.parse(response_json)
-          assert_false result["success"]
-          channels = nil
-          @server.instance_eval { channels = @channels }
-          assert_equal [@old_channel], channels
-        end
+      should "failed to create an existing channel" do
+        @server.send(:create, @logged_client, @old_channel)
+        response_json = @logged_client.response
+        result = JSON.parse(response_json)
+        assert_false result["success"]
+        channels = nil
+        @server.instance_eval { channels = @channels }
+        assert_equal [@old_channel], channels
       end
     end
   end
