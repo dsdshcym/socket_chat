@@ -67,14 +67,13 @@ class Server
   end
 
   def logged_in?(client)
-    @clients.has_key?(client)
+    t = @clients.has_key?(client)
+    reply client, false, "Please Login First." unless t
+    t
   end
 
   def message(client, *message)
-    unless logged_in?(client)
-      reply client, false, "Please Login First."
-      return
-    end
+    return unless logged_in?(client)
     sender = @clients[client]
     original_message = message.join(' ')
     reply_message = "#{sender.name}: #{original_message}"
@@ -87,9 +86,6 @@ class Server
   end
 
   def create(client, channel)
-    unless logged_in?(client)
-      reply client, false, "Please Login First."
-      return
-    end
+    return unless logged_in?(client)
   end
 end
