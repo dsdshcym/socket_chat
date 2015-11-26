@@ -4,7 +4,7 @@ require_relative "user"
 
 class Server
   def initialize()
-    @channels = Hash.new
+    @channels = Array.new
     @clients = Hash.new
   end
 
@@ -87,5 +87,7 @@ class Server
 
   def create(client, channel)
     return unless logged_in?(client)
+    @channels << channel
+    reply client, true, "Channel Created."
   end
 end
