@@ -164,6 +164,38 @@ class TestServer < Test::Unit::TestCase
         assert_false result["success"]
       end
     end
+
+    context "after login" do
+      setup do
+        @logged_username = "Alice"
+        @logged_client = Client.new(:logged_client)
+        @logged_user = User.new(@logged_username)
+        @new_channel = "NC"
+        @old_channel = "OC"
+
+        logged_user = @logged_user
+        logged_client = @logged_client
+        old_channel = @old_channel
+        @server.instance_eval do
+          @clients[logged_client] = logged_user
+          @channels = [old_channel]
+        end
+      end
+
+      should "success to join an existing channel" do
+        @server.send(:join, @logged_client, @old_channel)
+        response_json = @logged_client.response
+        result = JSON.parse(response_json)
+        assert_true result["success"]
+
+        user_channel = nil
+        logged_client = @logged_client
+        @server.instance_eval do
+          user_channel = @clients[logged_client].current_channel
+        end
+        assert_equal @old_channel, user_channel
+      end
+    end
   end
 end
 
