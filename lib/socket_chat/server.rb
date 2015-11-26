@@ -94,4 +94,8 @@ class Server
     @channels << channel
     reply client, true, "Channel Created."
   end
+
+  def join(client, channel)
+    return unless logged_in?(client)
+  end
 end
