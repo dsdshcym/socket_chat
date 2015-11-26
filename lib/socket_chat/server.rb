@@ -97,5 +97,9 @@ class Server
 
   def join(client, channel)
     return unless logged_in?(client)
+    if @channels.include?(channel)
+      @clients[client].current_channel = channel
+      reply client, true, "Joined Channel Successfully."
+    end
   end
 end
