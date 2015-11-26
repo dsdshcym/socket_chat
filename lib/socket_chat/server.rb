@@ -104,4 +104,8 @@ class Server
       reply client, false, "This Channel doesn't exist."
     end
   end
+
+  def list(client)
+    return unless logged_in?(client)
+  end
 end
