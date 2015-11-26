@@ -149,6 +149,22 @@ class TestServer < Test::Unit::TestCase
       end
     end
   end
+
+  context "user join channel" do
+    context "before login" do
+      setup do
+        @new_client = Client.new(:new_client)
+        @new_channel = "TC"
+      end
+
+      should "failed" do
+        @server.send(:join, @new_client, @new_channel)
+        response_json = @new_client.response
+        result = JSON.parse(response_json)
+        assert_false result["success"]
+      end
+    end
+  end
 end
 
 class Client
