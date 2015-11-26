@@ -87,6 +87,10 @@ class Server
 
   def create(client, channel)
     return unless logged_in?(client)
+    if @channels.include?(channel)
+      reply client, false, "This Channel is existed."
+      return
+    end
     @channels << channel
     reply client, true, "Channel Created."
   end
