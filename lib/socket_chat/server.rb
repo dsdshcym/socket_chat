@@ -100,6 +100,8 @@ class Server
     if @channels.include?(channel)
       @clients[client].current_channel = channel
       reply client, true, "Joined Channel Successfully."
+    else
+      reply client, false, "This Channel doesn't exist."
     end
   end
 end
