@@ -78,11 +78,10 @@ class Server
     original_message = message.join(' ')
     reply_message = "#{sender.name}: #{original_message}"
     @clients.each do |other_client, other_user|
-      if other_client != client
+      if other_user.current_channel == sender.current_channel
         reply other_client, true, reply_message
       end
     end
-    reply client, true, "Message sent."
   end
 
   def create(client, channel)
