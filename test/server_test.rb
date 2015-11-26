@@ -226,6 +226,30 @@ class TestServer < Test::Unit::TestCase
       end
     end
 
+    context "after login" do
+      setup do
+        @logged_username = "Alice"
+        @logged_client = Client.new(:logged_client)
+        @logged_user = User.new(@logged_username)
+        @old_channels = ["OC"]
+
+        logged_user = @logged_user
+        logged_client = @logged_client
+        old_channels = @old_channels
+        @server.instance_eval do
+          @clients[logged_client] = logged_user
+          @channels = old_channels
+        end
+      end
+
+      should "success" do
+        @server.send(:list, @logged_client)
+        response_json = @logged_client.response
+        result = JSON.parse(response_json)
+        assert_true result["success"]
+        assert_true response_json.include?("OC")
+      end
+    end
   end
 end
 
