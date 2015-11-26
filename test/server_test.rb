@@ -81,10 +81,24 @@ class TestServer < Test::Unit::TestCase
       setup do
         @logged_username = "Alice"
         logged_user = User.new(@logged_username)
+        logged_user.current_channel = "Channel 0"
         logged_client = Client.new(:logged_client)
         @logged_client = logged_client
         @server.instance_eval do
           @clients[logged_client] = logged_user
+        end
+
+        100.times do |i|
+          other_user = User.new("User#{i}")
+          if i >=50
+            other_user.current_channel = "Channel 0"
+          else
+            other_user.current_channel = "Channel 1"
+          end
+          other_client = Client.new("Client#{i}")
+          @server.instance_eval do
+            @clients[other_client] = other_user
+          end
         end
       end
 
@@ -93,6 +107,22 @@ class TestServer < Test::Unit::TestCase
         response_json = @logged_client.response
         result = JSON.parse(response_json)
         assert_true result["success"]
+      end
+
+      should "only send to client in the same channel" do
+        @server.send(:message, @logged_client, "Test")
+        clients = Hash.new
+        @server.instance_eval { clients = @clients }
+        clients.each do |client, user|
+          if user.current_channel != "Channel 0"
+            assert_nil client.response
+          else
+            response_json = @logged_client.response
+            result = JSON.parse(response_json)
+            assert_true result["success"]
+            assert_equal "#{@logged_username}: Test", result["message"]
+          end
+        end
       end
     end
   end
