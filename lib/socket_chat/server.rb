@@ -107,5 +107,6 @@ class Server
 
   def list(client)
     return unless logged_in?(client)
+    reply client, true, @channels
   end
 end
