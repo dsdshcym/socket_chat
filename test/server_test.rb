@@ -195,6 +195,20 @@ class TestServer < Test::Unit::TestCase
         end
         assert_equal @old_channel, user_channel
       end
+
+      should "failed to join a non-exist channel" do
+        @server.send(:join, @logged_client, @new_channel)
+        response_json = @logged_client.response
+        result = JSON.parse(response_json)
+        assert_false result["success"]
+
+        user_channel = nil
+        logged_client = @logged_client
+        @server.instance_eval do
+          user_channel = @clients[logged_client].current_channel
+        end
+        assert_equal nil, user_channel
+      end
     end
   end
 end
