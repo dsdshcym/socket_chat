@@ -111,6 +111,29 @@ class TestServer < Test::Unit::TestCase
         assert_false result["success"]
       end
     end
+
+    context "after login" do
+      setup do
+        @logged_username = "Alice"
+        logged_user = User.new(@logged_username)
+        @logged_client = Client.new(:logged_client)
+        logged_client = @logged_client
+        @server.instance_eval do
+          @clients[logged_client] = logged_user
+        end
+        @new_channel = "NC"
+      end
+
+      should "success to create a new channel" do
+        @server.send(:create, @logged_client, @new_channel)
+        response_json = @logged_client.response
+        result = JSON.parse(response_json)
+        assert_true result["success"]
+        channels = nil
+        @server.instance_eval { channels = @channels }
+        assert_equal [@new_channel], channels
+      end
+    end
   end
 end
 
