@@ -68,7 +68,7 @@ class Server
 
   def logged_in?(client)
     t = @clients.has_key?(client)
-    reply client, false, "Please Login First." unless t
+    reply client, false, "Please login using the '/login' command first." unless t
     t
   end
 
