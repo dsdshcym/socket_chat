@@ -83,6 +83,7 @@ class Server
         reply other_client, true, reply_message
       end
     end
+    reply client, true, ""
   end
 
   def create(client, channel)

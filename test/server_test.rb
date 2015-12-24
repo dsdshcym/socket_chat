@@ -109,14 +109,14 @@ class TestServer < Test::Unit::TestCase
         assert_true result["success"]
       end
 
-      should "only send to client in the same channel" do
+      should "only send to client in the same channel except sender" do
         @server.send(:message, @logged_client, "Test")
         clients = Hash.new
         @server.instance_eval { clients = @clients }
         clients.each do |client, user|
           if user.current_channel != "Channel 0"
             assert_nil client.response
-          else
+          elsif client != @logged_client
             response_json = client.response
             result = JSON.parse(response_json)
             assert_true result["success"]
