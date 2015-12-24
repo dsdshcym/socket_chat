@@ -109,4 +109,14 @@ class Server
     return unless logged_in?(client)
     reply client, true, @channels
   end
+
+  def exit(client)
+    return unless logged_in?(client)
+    if @clients[client].current_channel.nil?
+      reply client, false, "You haven't joined any Channel yet."
+    else
+      @clients[client].current_channel = nil
+      reply client, true, "Exited Channel Successfully"
+    end
+  end
 end
