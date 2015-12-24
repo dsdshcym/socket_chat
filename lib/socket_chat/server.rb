@@ -107,7 +107,11 @@ class Server
 
   def list(client)
     return unless logged_in?(client)
-    reply client, true, @channels
+    if @channels.empty?
+      reply client, true, "There are no channels now."
+    else
+      reply client, true, @channels
+    end
   end
 
   def exit(client)
