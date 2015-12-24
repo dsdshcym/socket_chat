@@ -100,7 +100,7 @@ class Server
     return unless logged_in?(client)
     if @channels.include?(channel)
       @clients[client].current_channel = channel
-      reply client, true, "Joined Channel Successfully."
+      reply client, true, "Joined Channel (#{channel}) Successfully."
     else
       reply client, false, "This Channel doesn't exist."
     end
