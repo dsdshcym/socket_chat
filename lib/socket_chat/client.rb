@@ -42,6 +42,10 @@ class Client
 
   def display(message)
     m = JSON.parse(message)["message"]
-    puts m
+    if JSON.parse(message)["success"]
+      puts m
+    else
+      puts "ERROR: #{m}"
+    end
   end
 end
