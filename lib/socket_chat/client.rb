@@ -1,4 +1,5 @@
 require "socket"
+require "json"
 
 class Client
   def initialize(host, port)
@@ -32,5 +33,10 @@ class Client
         @server.puts(message)
       }
     end
+  end
+
+  def display(message)
+    m = JSON.parse(message)["message"]
+    puts m
   end
 end
