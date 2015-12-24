@@ -117,7 +117,7 @@ class TestServer < Test::Unit::TestCase
           if user.current_channel != "Channel 0"
             assert_nil client.response
           else
-            response_json = @logged_client.response
+            response_json = client.response
             result = JSON.parse(response_json)
             assert_true result["success"]
             assert_equal "#{@logged_username}: Test", result["message"]
