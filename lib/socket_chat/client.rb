@@ -30,6 +30,11 @@ class Client
     @request = Thread.new do
       loop {
         message = $stdin.gets.chomp
+        if message[0] != '/'
+          message = 'message ' + message
+        else
+          message = message[1..-1]
+        end
         @server.puts(message)
       }
     end
