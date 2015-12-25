@@ -1,0 +1,110 @@
+#+TITLE: Socket Chat Room
+
+* 项目说明
+这个项目是基于 Socket 的一个聊天室的实现，模仿了 IRC 的设计。使用 TDD 模式开发，
+测试覆盖了 Server 端的实现，通过率 100% 。
+- 基本功能
+  - 登录 ::
+       用户可使用自定义用户名登录 ~/login username~ ，并对重复用户名作出错误提示
+  - 发送消息 ::
+       用户在频道中可发送消息 ~message~ ，只有在相同频道中的用户才能接收到消息
+  - 创建频道 ::
+       用户可创建新频道 ~/create channelName~ ，并对重复频道作出错误提示
+  - 加入频道 ::
+       用户可通过频道名加入频道 ~/join channelName~ ，在加入频道前，用户处于默认
+       频道
+  - 获取频道列表 ::
+       用户可获取当前已有频道的列表 ~/list~
+  - 退出频道 ::
+       用户可退出当前频道回到默认频道 ~/exit~
+- 开发工具
+  - 语言 :: Ruby
+  - 编辑器 :: Emacs 24.5.1
+  - 测试平台 :: OS X 10.11.2
+- 使用的 Ruby 库
+  - 功能
+    - ~optparse~
+    - ~json~
+    - ~socket~
+  - 测试
+    - ~test-unit~
+    - ~shoulda~
+* 协议设计
+** 有效指令
+| LOGIN   | 登陆              |
+| MESSAGE | 发送消息          |
+| JOIN    | 加入 Channel      |
+| CREATE  | 创建 Channel      |
+| LIST    | 显示 Channel 列表 |
+| EXIT    | 退出 Channel      |
+** C/S 通信
+*** Client to Server
+客户端直接传输 "method args" 给服务器端，由服务器解析 method ，验证 method 正确
+性，并利用 ruby 的 ~send~ 函数直接调用相关的函数进行处理。
+*** Server to Client
+消息以 json 格式打包，服务器端将成功与否及返回的消息信息传回客户端，由客户端解析
+输出。
+* 代码说明
+** ~lib/socket_chat/server.rb~
+Server 类
+- 公有函数
+  - ~initialize~ ::
+       新建 Server 类时调用
+  - ~build_server~ ::
+       根据参数打开一个 TCP 的服务器
+  - ~run~ ::
+       对每个 Client 请求开一个新的 Thread 进行监听处理
+- 私有函数
+  - ~listen~ ::
+       对收到的 Client 消息进行预处理，调用相应的函数
+  - ~reply~ ::
+       辅助函数，封装了将成功与否和返回消息传输给 Client 的功能
+  - ~parse~ ::
+       辅助函数，在 ~listen~ 中处理 Client 消息使用
+  - ~logged_in?~ ::
+       检查当前请求的 Client 是否已登录，若不是则返回错误消息，供需要登录的操作函数
+       使用
+
+  下列都是协议中规定的功能函数
+
+  - ~login~
+  - ~message~
+  - ~create~
+  - ~join~
+  - ~list~
+  - ~exit~
+** ~lib/socket_chat/client.rb~
+Client 类
+- 公有函数
+  - ~initialize~ ::
+       初始化函数，根据给定参数连接 TCPSocket 服务器
+  - ~run~ ::
+       运行一个
+- 私有函数
+  - ~listen~ ::
+       监听服务器的消息并调用 ~display~ 将消息显示给用户
+  - ~send~ ::
+       对用户的输入进行预处理，并传输给服务器
+  - ~display~ ::
+       将消息按 json 格式解析并显示
+** ~lib/socket_chat/user.rb~
+- User 类
+  - name ::
+       用户名
+  - current_channel ::
+       当前所在 Channel ，默认为 nil
+** ~test/server_test.rb~
+对 server.rb 的测试代码，在此略过
+** ~lib/socket_chat/parser.rb~
+对 CLI 输入变量的解析类，供 ~socket_chat_server~ 和 ~socket_chat_client~ 调用
+** ~bin/socket_chat_server~
+CLI 程序，根据用户输入的地址和端口号开启服务器
+- 默认地址 :: ~localhost~
+- 端口号 :: 8000
+** ~bin/socket_chat_client~
+CLI 程序，根据用户输入的地址和端口号连接服务器
+- 默认地址 :: ~localhost~
+- 端口号 :: 8000
+* Demo
+  #+ATTR_HTML: :width 50%
+  [[./img/demo.gif]]
