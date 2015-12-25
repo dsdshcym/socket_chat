@@ -43,7 +43,7 @@ class Client
   def display(message)
     m = JSON.parse(message)["message"]
     if JSON.parse(message)["success"]
-      puts m
+      puts m if !m.empty?
     else
       puts "ERROR: #{m}"
     end
